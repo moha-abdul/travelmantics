@@ -24,8 +24,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference().child("traveldeals");
+        FirebaseUtil.openFbReference("traveldeals");
+        mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
+        mDatabaseReference = FirebaseUtil.mDatabaseReference;
         text_title = (EditText) findViewById(R.id.text_title);
         text_price = (EditText) findViewById(R.id.text_price);
         text_description = (EditText) findViewById(R.id.text_description);
