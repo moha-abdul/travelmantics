@@ -2,23 +2,24 @@ package com.example.travelmantics;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
+public class DealActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
-    EditText text_title;
-    EditText text_price;
-    EditText text_description;
+    EditText txtTitle;
+    EditText txtPrice;
+    EditText txtDescription;
+    TravelDeal deal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +28,18 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUtil.openFbReference("traveldeals");
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
         mDatabaseReference = FirebaseUtil.mDatabaseReference;
-        text_title = (EditText) findViewById(R.id.text_title);
-        text_price = (EditText) findViewById(R.id.text_price);
-        text_description = (EditText) findViewById(R.id.text_description);
+        txtTitle = (EditText) findViewById(R.id.txtTitle);
+        txtPrice = (EditText) findViewById(R.id.txtPrice);
+        txtDescription = (EditText) findViewById(R.id.txtDescription);
+        Intent intent = getIntent();
+        TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
+        if (deal == null) {
+            deal = new TravelDeal();
+        }
+        this.deal = deal;
+        txtTitle.setText(deal.getTitle());
+        txtDescription.setText(deal.getDescription());
+        txtPrice.setText(deal.getDescription());
     }
 
     @Override
@@ -46,16 +56,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clean() {
-        text_title.setText("");
-        text_price.setText("");
-        text_description.setText("");
-        text_title.requestFocus();
+        txtTitle.setText("");
+        txtPrice.setText("");
+        txtDescription.setText("");
+        txtTitle.requestFocus();
     }
 
     private void SaveDeal() {
-        String title = text_title.getText().toString();
-        String price = text_price.getText().toString();
-        String description = text_description.getText().toString();
+        String title = txtTitle.getText().toString();
+        String price = txtPrice.getText().toString();
+        String description = txtDescription.getText().toString();
         TravelDeal deal = new TravelDeal(title, price, description, "");
         mDatabaseReference.push().setValue(deal);
     }
