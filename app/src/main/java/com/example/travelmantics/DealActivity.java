@@ -39,7 +39,7 @@ public class DealActivity extends AppCompatActivity {
         this.deal = deal;
         txtTitle.setText(deal.getTitle());
         txtDescription.setText(deal.getDescription());
-        txtPrice.setText(deal.getDescription());
+        txtPrice.setText(deal.getPrice());
     }
 
     @Override
@@ -49,6 +49,12 @@ public class DealActivity extends AppCompatActivity {
                 SaveDeal();
                 Toast.makeText(this, "Deal Saved", Toast.LENGTH_LONG).show();
                 clean();
+                backToList();
+                return true;
+            case R.id.delete_menu:
+                deleteDeal();
+                Toast.makeText(this, "Deal Deleted", Toast.LENGTH_LONG).show();
+                backToList();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -63,11 +69,27 @@ public class DealActivity extends AppCompatActivity {
     }
 
     private void SaveDeal() {
-        String title = txtTitle.getText().toString();
-        String price = txtPrice.getText().toString();
-        String description = txtDescription.getText().toString();
-        TravelDeal deal = new TravelDeal(title, price, description, "");
-        mDatabaseReference.push().setValue(deal);
+        deal.setTitle(txtTitle.getText().toString());
+        deal.setPrice(txtPrice.getText().toString());
+        deal.setDescription(txtDescription.getText().toString());
+        if (deal.getId()== null) {
+            mDatabaseReference.push().setValue(deal);
+        }
+        else {
+            mDatabaseReference.child(deal.getId()).setValue(deal);
+        }
+    }
+    private void deleteDeal() {
+        if (deal == null) {
+            Toast.makeText(this, "Save the deal first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mDatabaseReference.child(deal.getId()).removeValue();
+    }
+
+    private void backToList(){
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
     }
 
     @Override
